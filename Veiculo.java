@@ -8,7 +8,7 @@ public abstract class Veiculo {
     private Motor motor;
     private TstPlaca tstPlaca;    
 
-    public abstract void calcVel(); 
+    public abstract int calcVel(); 
 
     public Veiculo(){
         placa = "";
@@ -40,52 +40,55 @@ public abstract class Veiculo {
         this.tstPlaca = tstPlaca;
     }
 
-    public void setPlaca(String placa){
+    public final void setPlaca(String placa){
         this.placa = placa;
     }
-    public String getPlaca(){
+    public final String getPlaca(){
         return placa;
     }
-    public void setMarca(String marca){
+    public final void setMarca(String marca){
         this.marca = marca;
     }
-    public String getMarca(){
+    public final String getMarca(){
         return marca;
     }
-    public void setModelo(String modelo){
+    public final void setModelo(String modelo){
         this.modelo = modelo;
     }
-    public String getModelo(){
+    public final String getModelo(){
         return modelo;
     }
-    public void setCor(String cor){
+    public final void setCor(String cor){
         this.cor = cor;
     }
-    public String getCor(){
+    public final String getCor(){
         return cor;
     }
-    public void setQtdRodas(int qtdRodas){
+    public final void setQtdRodas(int qtdRodas){
         this.qtdRodas = qtdRodas;
     }
-    public int getQtdRodas(){
+    public final int getQtdRodas(){
         return qtdRodas;
     }
-    public void setVelocMax(int velocMax){
+    public final void setVelocMax(int velocMax) throws VelocException{
+        if(velocMax < 100 || velocMax > 250)
+            throw new VelocException();
+
         this.velocMax = velocMax;
     }
-    public int getVelocMax(){
+    public final int getVelocMax(){
         return velocMax;
     }
-    public void setMotor(Motor motor){
+    public final void setMotor(Motor motor){
         this.motor = motor;
     }
-    public Motor getMotor(){
+    public final Motor getMotor(){
         return motor;
     }
-    public void setTstPlaca(TstPlaca tstPlaca){
+    public final void setTstPlaca(TstPlaca tstPlaca){
         this.tstPlaca = tstPlaca;
     }
-    public TstPlaca getTstPlaca(){
+    public final TstPlaca getTstPlaca(){
         return tstPlaca;
     }
 }

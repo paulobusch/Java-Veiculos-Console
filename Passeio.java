@@ -16,10 +16,13 @@ public class Passeio extends Veiculo implements Calc{
     }
 
     public int calcular(){
-        return 0;
+        return super.getPlaca().length()
+            + super.getMarca().length()
+            + super.getModelo().length()
+            + super.getCor().length();
     }
 
-    public void calcVel(){
-        
+    public int calcVel(){        
+        return super.getVelocMax() * 1000;
     }
 }

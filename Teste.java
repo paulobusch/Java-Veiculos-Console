@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 
 public class Teste{
     public static void main(String arg[]){
@@ -102,6 +104,7 @@ public class Teste{
             case 3:
                 System.out.printf("\n\nLISTA DE VEÍCULOS DE PASSEIO\n");  
                 if(db.getLstPasseio().size() > 0){
+                    printDate();
                     for(int i = 0; i < db.getLstPasseio().size(); i++){
                         printPasseio(db.getLstPasseio().get(i));
                         System.out.printf("\n");
@@ -115,6 +118,7 @@ public class Teste{
             case 4:
                 System.out.printf("\n\nLISTA DE VEÍCULOS DE CARGA\n");    
                 if(db.getLstCarga().size() > 0){
+                    printDate();
                     for(int i = 0; i < db.getLstCarga().size(); i++){
                         printCarga(db.getLstCarga().get(i));
                         System.out.printf("\n");
@@ -130,6 +134,7 @@ public class Teste{
 
                 if(db.Query(passeio) != null){                 
                     System.out.printf("\n");
+                    printDate();
                     printPasseio(db.Query(passeio));
                 }else
                     System.out.printf("\nNenhum veículo de passeio encontrado\n");
@@ -152,6 +157,7 @@ public class Teste{
 
                 if(db.Query(passeio) != null){                 
                     System.out.printf("\n");
+                    printDate();
                     printPasseio(db.Query(passeio));
                     db.Update(obterPasseio(leitura, false));
                 }else
@@ -179,29 +185,34 @@ public class Teste{
     }
 
     //================== CADASTROS ===================
-    private static Veiculo obterVeiculo(Veiculo veiculo, Leitura leitura, boolean cadPlaca){
-        boolean placaValida = false;
-        
-        //Veículo
-        if(cadPlaca)
-            veiculo.setPlaca(tryGetPlaca(veiculo, leitura));
-        veiculo.setMarca(leitura.entraDados("Marca: "));
-        veiculo.setModelo(leitura.entraDados("Modelo: "));
-        veiculo.setCor(leitura.entraDados("Cor: "));
-        veiculo.setQtdRodas(tryGetInt(leitura, "Quantidade de rodas: "));
-        veiculo.setVelocMax(tryGetInt(leitura, "Velocidade máxima: "));
-
-        //Motor
-        veiculo.getMotor().setQtdPistoes(tryGetInt(leitura, "MOTOR - Quantidade piestões: "));
-        veiculo.getMotor().setPotencia(tryGetInt(leitura, "MOTOR - Potência: "));
-
-        return veiculo;
-    }
     private static Passeio obterPasseio(Leitura leitura, boolean cadPlaca){
         Passeio passeio = new Passeio();
 
-        System.out.printf("\nCADASTRO DE VEÍCULO DE PASSEIO\n");     
-        passeio = (Passeio)obterVeiculo(passeio, leitura, cadPlaca);
+        System.out.printf("\nCADASTRO DE VEÍCULO DE PASSEIO\n"); 
+
+        //Veículo
+        if(cadPlaca)
+            passeio.setPlaca(tryGetPlaca(passeio, leitura));
+        passeio.setMarca(leitura.entraDados("Marca: "));
+        passeio.setModelo(leitura.entraDados("Modelo: "));
+        passeio.setCor(leitura.entraDados("Cor: "));
+        passeio.setQtdRodas(tryGetInt(leitura, "Quantidade de rodas: "));
+
+        try{
+            passeio.setVelocMax(tryGetInt(leitura, "Velocidade máxima: "));
+        }catch(VelocException ex){
+            try{
+                passeio.setVelocMax(150);
+            }catch(VelocException ex1){ }
+            System.out.println("A velocidade máxima está fora dos limites brasileiros");
+        }
+
+        //Motor
+        passeio.setMotor(new Motor());
+        passeio.getMotor().setQtdPistoes(tryGetInt(leitura, "MOTOR - Quantidade piestões: "));
+        passeio.getMotor().setPotencia(tryGetInt(leitura, "MOTOR - Potência: "));
+
+        //Passeio
         passeio.setQtdPassageiro(tryGetInt(leitura, "Passageiros: "));
         
         return passeio;
@@ -210,7 +221,30 @@ public class Teste{
         Carga carga = new Carga();
 
         System.out.printf("\nCADASTRO DE VEÍCULO DE CARGA\n"); 
-        carga = (Carga)obterVeiculo(carga, leitura, cadPlaca);
+
+        //Veículo
+        if(cadPlaca)
+            carga.setPlaca(tryGetPlaca(carga, leitura));
+        carga.setMarca(leitura.entraDados("Marca: "));
+        carga.setModelo(leitura.entraDados("Modelo: "));
+        carga.setCor(leitura.entraDados("Cor: "));
+        carga.setQtdRodas(tryGetInt(leitura, "Quantidade de rodas: "));
+        
+        try{
+            carga.setVelocMax(tryGetInt(leitura, "Velocidade máxima: "));
+        }catch(VelocException ex){
+            try{
+                carga.setVelocMax(120);
+            }catch(VelocException ex1){ }
+            System.out.println("A velocidade máxima está fora dos limites brasileiros");
+        }
+
+        //Motor
+        carga.setMotor(new Motor());
+        carga.getMotor().setQtdPistoes(tryGetInt(leitura, "MOTOR - Quantidade piestões: "));
+        carga.getMotor().setPotencia(tryGetInt(leitura, "MOTOR - Potência: "));
+
+        //Carga
         carga.setTara(tryGetInt(leitura, "Tara: "));
         carga.setCargaMax(tryGetInt(leitura, "Carga máxima: "));
 
@@ -218,27 +252,35 @@ public class Teste{
     }
 
     //================== IMPRIMIR ===================
-    private static void printVeiculo(Veiculo veiculo){
+    private static void printVeiculo(Veiculo veiculo, String unidadeDiatancia){
         //Veículo
         System.out.println("Placa: " + veiculo.getPlaca());
         System.out.println("Marca: " + veiculo.getMarca());
         System.out.println("Modelo: " + veiculo.getModelo());
         System.out.println("Cor: " + veiculo.getCor());
         System.out.println("Quantidade de rodas: " + veiculo.getQtdRodas());
-        System.out.printf("Velocidade máxima: %d km/h" + veiculo.getVelocMax());
+        System.out.printf("Velocidade máxima: %d " + unidadeDiatancia, veiculo.calcVel());
         
         //Motor
         System.out.println("MOTOR - Quantidade piestões: " + veiculo.getMotor().getQtdPistoes());
         System.out.println("MOTOR - Potência: " + veiculo.getMotor().getPotencia());
     }
     private static void printPasseio(Passeio passeio){
-        printVeiculo(passeio);        
+        printVeiculo(passeio, "M/h");        
         System.out.println("Quantidade de passageiros: " + passeio.getQtdPassageiro());
+        System.out.println("Calcular: " + passeio.calcular());
     }
     private static void printCarga(Carga carga){
-        printVeiculo(carga);
+        printVeiculo(carga, "Cm/h");
         System.out.println("Tara: " + carga.getTara());
         System.out.println("Carga Máxima: " + carga.getCargaMax());
+        System.out.println("Calcular: " + carga.calcular());
+    }
+    private static void printDate(){
+        String data = "dd/MM/yyyy HH:mm";
+		java.util.Date agora = new java.util.Date();;
+		SimpleDateFormat formata = new SimpleDateFormat(data);
+		System.out.println("Data: " + formata.format(agora));
     }
 
     //================== ENTRADA ===================
