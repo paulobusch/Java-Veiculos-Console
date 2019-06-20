@@ -41,14 +41,64 @@ public class Teste{
         return opc;
     }
     private static void funcaoMenu(int opc, Leitura leitura, BDVeiculos db){
-        boolean placaValida = false;
+        Passeio passeio = new Passeio();
+        Carga carga = new Carga();
         switch(opc){
+            //================== Cadastrar Veículo de Passeio ====================
             case 1:
-                db.Insert(obterPasseio(leitura));
+                Passeio passeioInsert = new Passeio();
+                boolean passeioNovo = true;
+                boolean passeioAtualizar = false;
+                do{
+                    passeioAtualizar = false;
+                    try{
+                        if(passeioNovo)
+                            passeioInsert = obterPasseio(leitura, true);
+                        db.Insert(passeioInsert);
+                    }catch(VeicExistException ex){
+                        System.out.println("Já existe um veículo com a mesma placa");
+                        String sob = leitura.entraDados("\nDeseja sobrescrever o veículo? [s / n] \n");
+                        passeioAtualizar = (sob.charAt(0) == 's' || sob.charAt(0) == 'S');
+                        if(passeioAtualizar){
+                            passeioInsert.setPlaca(tryGetPlaca(passeioInsert, leitura));
+                            passeioNovo = false;
+                            continue;
+                        }
+                    }finally{
+                        String cad = leitura.entraDados("Deseja cadastrar um novo veículo de passeio? [s / n] ");
+                        passeioNovo = (cad.charAt(0) == 's' || cad.charAt(0) == 'S');
+                    }
+                }while(passeioAtualizar || passeioNovo);
                 break;
+
+            //================== Cadastrar Veículo de Carga ======================
             case 2:
-                db.Insert(obterCarga(leitura));
+                Carga cargaInsert = new Carga();
+                boolean cargaNovo = true;
+                boolean cargaAtualizar = false;
+                do{
+                    cargaAtualizar = false;
+                    try{
+                        if(cargaNovo)
+                            cargaInsert = obterCarga(leitura, true);
+                        db.Insert(cargaInsert);
+                    }catch(VeicExistException ex){
+                        System.out.println("Já existe um veículo com a mesma placa");
+                        String sob = leitura.entraDados("\nDeseja sobrescrever o veículo? [s / n] \n");
+                        cargaAtualizar = (sob.charAt(0) == 's' || sob.charAt(0) == 'S');
+                        if(cargaAtualizar){
+                            cargaInsert.setPlaca(tryGetPlaca(cargaInsert, leitura));
+                            cargaNovo = false;
+                            continue;
+                        }
+                    }finally{                        
+                        String cad = leitura.entraDados("Deseja cadastrar um novo veículo de carga? [s / n] ");
+                        cargaNovo = (cad.charAt(0) == 's' || cad.charAt(0) == 'S');
+                    }
+                }while(cargaAtualizar || cargaNovo);
                 break;
+            
+            //=============== Imprimir Todos os Veículos de Passeio =============
             case 3:
                 System.out.printf("\n\nLISTA DE VEÍCULOS DE PASSEIO\n");  
                 if(db.getLstPasseio().size() > 0){
@@ -60,6 +110,8 @@ public class Teste{
                     System.out.println("Nenhum veículo de passeio cadastrado");
                 }
                 break;
+
+            //============= Imprimir Todos os Veículos de Carga ==================
             case 4:
                 System.out.printf("\n\nLISTA DE VEÍCULOS DE CARGA\n");    
                 if(db.getLstCarga().size() > 0){
@@ -71,8 +123,9 @@ public class Teste{
                     System.out.println("Nenhum veículo de carga cadastrado");
                 }
                 break;
+            
+            //============= Imprimir Veículo de Passeio pela Placa ===============
             case 5:
-                Passeio passeio = new Passeio();
                 passeio.setPlaca(tryGetPlaca(passeio, leitura));
 
                 if(db.Query(passeio) != null){                 
@@ -81,20 +134,44 @@ public class Teste{
                 }else
                     System.out.printf("\nNenhum veículo de passeio encontrado\n");
                 break;
+
+            //============= Imprimir Veículo de Passeio pela Placa ===============
             case 6:
-                Carga carga = new Carga();
                 carga.setPlaca(tryGetPlaca(carga, leitura));
 
                 if(db.Query(carga) != null){         
                     System.out.printf("\n");
                     printCarga(db.Query(carga));
                 }else
-                    System.out.printf("\nNenhum veículo de passeio encontrado\n");
+                    System.out.printf("\nNenhum veículo de carga encontrado\n");
                 break;
+
+            //========= Alterar dados do Veículo de Passeio pela Placa ============
             case 7:
+                passeio.setPlaca(tryGetPlaca(passeio, leitura));
+
+                if(db.Query(passeio) != null){                 
+                    System.out.printf("\n");
+                    printPasseio(db.Query(passeio));
+                    db.Update(obterPasseio(leitura, false));
+                }else
+                    System.out.printf("\nNenhum veículo de passeio encontrado\n");
+
                 break;
-            case 8:
+            
+            //========= Alterar dados do Veículo de Carga pela Placa ==============
+            case 8:                
+                carga.setPlaca(tryGetPlaca(carga, leitura));
+
+                if(db.Query(carga) != null){                 
+                    System.out.printf("\n");
+                    printCarga(db.Query(carga));
+                    db.Update(obterCarga(leitura, false));
+                }else
+                    System.out.printf("\nNenhum veículo de carga encontrado\n");
                 break;
+
+            //=========================== Sair do Sistema =========================
             case 9:
                 System.out.println("Saída do sistema!");
                 break;
@@ -102,11 +179,12 @@ public class Teste{
     }
 
     //================== CADASTROS ===================
-    private static Veiculo obterVeiculo(Veiculo veiculo, Leitura leitura){
+    private static Veiculo obterVeiculo(Veiculo veiculo, Leitura leitura, boolean cadPlaca){
         boolean placaValida = false;
         
         //Veículo
-        veiculo.setPlaca(tryGetPlaca(veiculo, leitura));
+        if(cadPlaca)
+            veiculo.setPlaca(tryGetPlaca(veiculo, leitura));
         veiculo.setMarca(leitura.entraDados("Marca: "));
         veiculo.setModelo(leitura.entraDados("Modelo: "));
         veiculo.setCor(leitura.entraDados("Cor: "));
@@ -119,20 +197,20 @@ public class Teste{
 
         return veiculo;
     }
-    private static Passeio obterPasseio(Leitura leitura){
+    private static Passeio obterPasseio(Leitura leitura, boolean cadPlaca){
         Passeio passeio = new Passeio();
 
         System.out.printf("\nCADASTRO DE VEÍCULO DE PASSEIO\n");     
-        passeio = (Passeio)obterVeiculo(passeio, leitura);
+        passeio = (Passeio)obterVeiculo(passeio, leitura, cadPlaca);
         passeio.setQtdPassageiro(tryGetInt(leitura, "Passageiros: "));
         
         return passeio;
     }
-    private static Carga obterCarga(Leitura leitura){
+    private static Carga obterCarga(Leitura leitura, boolean cadPlaca){
         Carga carga = new Carga();
 
         System.out.printf("\nCADASTRO DE VEÍCULO DE CARGA\n"); 
-        carga = (Carga)obterVeiculo(carga, leitura);
+        carga = (Carga)obterVeiculo(carga, leitura, cadPlaca);
         carga.setTara(tryGetInt(leitura, "Tara: "));
         carga.setCargaMax(tryGetInt(leitura, "Carga máxima: "));
 
@@ -147,7 +225,7 @@ public class Teste{
         System.out.println("Modelo: " + veiculo.getModelo());
         System.out.println("Cor: " + veiculo.getCor());
         System.out.println("Quantidade de rodas: " + veiculo.getQtdRodas());
-        System.out.println("Velocidade máxima: " + veiculo.getVelocMax());
+        System.out.printf("Velocidade máxima: %d km/h" + veiculo.getVelocMax());
         
         //Motor
         System.out.println("MOTOR - Quantidade piestões: " + veiculo.getMotor().getQtdPistoes());
