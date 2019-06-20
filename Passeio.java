@@ -6,7 +6,7 @@ public class Passeio extends Veiculo implements Calc{
     }
     public Passeio(int qtdPassageiro){
         this.qtdPassageiro = qtdPassageiro;
-    }
+    }    
 
     public void setQtdPassageiro(int qtdPassageiro){
         this.qtdPassageiro = qtdPassageiro;

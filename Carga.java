@@ -5,7 +5,7 @@ public class Carga extends Veiculo implements Calc{
     public Carga(){
         tara = 0;
         cargaMax = 0;
-    }
+    }   
     public Carga(
         int tara,
         int cargaMax

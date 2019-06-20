@@ -17,7 +17,7 @@ public class BDVeiculos {
     }
     public Passeio Query(Passeio passeio){
         for(int i = 0; i < lstPasseio.size(); i++){
-            if(passeio.getPlaca() == lstPasseio.get(i).getPlaca())
+            if(passeio.getPlaca().equals(lstPasseio.get(i).getPlaca()))
                 return lstPasseio.get(i);
         }
 
@@ -25,7 +25,7 @@ public class BDVeiculos {
     }
     public Carga Query(Carga carga){        
         for(int i = 0; i < lstCarga.size(); i++){
-            if(carga.getPlaca() == lstCarga.get(i).getPlaca())
+            if(carga.getPlaca().equals(lstCarga.get(i).getPlaca()))
                 return lstCarga.get(i);
         }
 

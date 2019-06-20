@@ -41,6 +41,7 @@ public class Teste{
         return opc;
     }
     private static void funcaoMenu(int opc, Leitura leitura, BDVeiculos db){
+        boolean placaValida = false;
         switch(opc){
             case 1:
                 db.Insert(obterPasseio(leitura));
@@ -51,8 +52,10 @@ public class Teste{
             case 3:
                 System.out.printf("\n\nLISTA DE VEÍCULOS DE PASSEIO\n");  
                 if(db.getLstPasseio().size() > 0){
-                    for(int i = 0; i < db.getLstPasseio().size(); i++)
+                    for(int i = 0; i < db.getLstPasseio().size(); i++){
                         printPasseio(db.getLstPasseio().get(i));
+                        System.out.printf("\n");
+                    }
                 }else{
                     System.out.println("Nenhum veículo de passeio cadastrado");
                 }
@@ -60,15 +63,33 @@ public class Teste{
             case 4:
                 System.out.printf("\n\nLISTA DE VEÍCULOS DE CARGA\n");    
                 if(db.getLstCarga().size() > 0){
-                    for(int i = 0; i < db.getLstCarga().size(); i++)
+                    for(int i = 0; i < db.getLstCarga().size(); i++){
                         printCarga(db.getLstCarga().get(i));
+                        System.out.printf("\n");
+                    }
                 }else{
                     System.out.println("Nenhum veículo de carga cadastrado");
                 }
                 break;
             case 5:
+                Passeio passeio = new Passeio();
+                passeio.setPlaca(tryGetPlaca(passeio, leitura));
+
+                if(db.Query(passeio) != null){                 
+                    System.out.printf("\n");
+                    printPasseio(db.Query(passeio));
+                }else
+                    System.out.printf("\nNenhum veículo de passeio encontrado\n");
                 break;
             case 6:
+                Carga carga = new Carga();
+                carga.setPlaca(tryGetPlaca(carga, leitura));
+
+                if(db.Query(carga) != null){         
+                    System.out.printf("\n");
+                    printCarga(db.Query(carga));
+                }else
+                    System.out.printf("\nNenhum veículo de passeio encontrado\n");
                 break;
             case 7:
                 break;
@@ -85,13 +106,7 @@ public class Teste{
         boolean placaValida = false;
         
         //Veículo
-        do{
-            veiculo.setPlaca(leitura.entraDados("Placa: "));
-            placaValida = veiculo.getTstPlaca().certificPlaca(veiculo.getPlaca());
-            if(!placaValida)         
-                System.out.println("Placa inválida!");
-        }while(!placaValida);
-
+        veiculo.setPlaca(tryGetPlaca(veiculo, leitura));
         veiculo.setMarca(leitura.entraDados("Marca: "));
         veiculo.setModelo(leitura.entraDados("Modelo: "));
         veiculo.setCor(leitura.entraDados("Cor: "));
@@ -164,5 +179,16 @@ public class Teste{
         }while(!valido);
 
         return ret;
+    }
+    private static String tryGetPlaca(Veiculo veiculo, Leitura leitura){
+        boolean placaValida = false;
+        do{
+            veiculo.setPlaca(leitura.entraDados("Placa: "));
+            placaValida = veiculo.getTstPlaca().certificPlaca(veiculo.getPlaca());
+            if(!placaValida)         
+                System.out.println("Placa inválida!");
+        }while(!placaValida);
+
+        return veiculo.getPlaca();
     }
 }
