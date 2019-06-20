@@ -31,4 +31,10 @@ public class BDVeiculos {
 
         return null;
     }
+    public List<Passeio> getLstPasseio(){
+        return lstPasseio;
+    }
+    public List<Carga> getLstCarga(){
+        return lstCarga;
+    }
 }

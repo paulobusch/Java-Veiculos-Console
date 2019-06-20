@@ -49,8 +49,22 @@ public class Teste{
                 db.Insert(obterCarga(leitura));
                 break;
             case 3:
+                System.out.printf("\n\nLISTA DE VEÍCULOS DE PASSEIO\n");  
+                if(db.getLstPasseio().size() > 0){
+                    for(int i = 0; i < db.getLstPasseio().size(); i++)
+                        printPasseio(db.getLstPasseio().get(i));
+                }else{
+                    System.out.println("Nenhum veículo de passeio cadastrado");
+                }
                 break;
             case 4:
+                System.out.printf("\n\nLISTA DE VEÍCULOS DE CARGA\n");    
+                if(db.getLstCarga().size() > 0){
+                    for(int i = 0; i < db.getLstCarga().size(); i++)
+                        printCarga(db.getLstCarga().get(i));
+                }else{
+                    System.out.println("Nenhum veículo de carga cadastrado");
+                }
                 break;
             case 5:
                 break;
@@ -112,15 +126,26 @@ public class Teste{
 
     //================== IMPRIMIR ===================
     private static void printVeiculo(Veiculo veiculo){
-
+        //Veículo
+        System.out.println("Placa: " + veiculo.getPlaca());
+        System.out.println("Marca: " + veiculo.getMarca());
+        System.out.println("Modelo: " + veiculo.getModelo());
+        System.out.println("Cor: " + veiculo.getCor());
+        System.out.println("Quantidade de rodas: " + veiculo.getQtdRodas());
+        System.out.println("Velocidade máxima: " + veiculo.getVelocMax());
+        
+        //Motor
+        System.out.println("MOTOR - Quantidade piestões: " + veiculo.getMotor().getQtdPistoes());
+        System.out.println("MOTOR - Potência: " + veiculo.getMotor().getPotencia());
     }
     private static void printPasseio(Passeio passeio){
-
-        printVeiculo(passeio);
+        printVeiculo(passeio);        
+        System.out.println("Quantidade de passageiros: " + passeio.getQtdPassageiro());
     }
     private static void printCarga(Carga carga){
-
         printVeiculo(carga);
+        System.out.println("Tara: " + carga.getTara());
+        System.out.println("Carga Máxima: " + carga.getCargaMax());
     }
 
     //================== ENTRADA ===================
