@@ -1,4 +1,5 @@
-import java.util;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BDVeiculos {
     private List<Passeio> lstPasseio;
@@ -9,9 +10,9 @@ public class BDVeiculos {
         lstCarga = new ArrayList<Carga>();
     }
     public void Insert(Passeio passeio){
-        lstPasseio.Add(passeio);
+        lstPasseio.add(passeio);
     }
     public void Insert(Carga carga){
-        lstCarga.Add(carga);
+        lstCarga.add(carga);
     }
 }

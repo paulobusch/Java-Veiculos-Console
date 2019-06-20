@@ -30,4 +30,8 @@ public class Carga extends Veiculo implements Calc{
     public int calcular(){
         return 0;
     }
+
+    public void calcVel(){
+        
+    }
 }

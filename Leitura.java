@@ -8,7 +8,7 @@ public class Leitura {
         InputStreamReader reader = new InputStreamReader(System.in);
         BufferedReader buffer = new BufferedReader(reader);
 
-        System.out.println(rotulo);
+        System.out.printf(rotulo);
         try{
             ret = buffer.readLine();
         }catch(IOException ex){
