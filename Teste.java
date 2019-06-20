@@ -3,25 +3,26 @@ public class Teste{
         Leitura l = new Leitura();
         Passeio p = new Passeio();
         Carga c = new Carga();
-        BDVeiculos bd = new BDVeiculos();
+        BDVeiculos db = new BDVeiculos();
 
         int opc = 0;
         do{
             do{
-               opc = opcaoMenu();
+                opc = opcaoMenu();
 
                 if(opc < 1 || opc > 9){
                     Runtime.getRuntime().exec("cls");
                     System.out.println("Opção inválida!");
                 }
-
             }while(opc < 1 || opc > 9);
 
             Runtime.getRuntime().exec("cls");
-            funcaoMenu(opc);
+            funcaoMenu(opc, db);
 
         }while(opc != 9);
     }
+
+    //================== MENU ===================
     private static int opcaoMenu(){
         System.out.printf("Sistema de Gestão de Veículos - Menu Inicial\n\n");
         System.out.println("1)_ Cadastrar Veículo de Passeio");
@@ -43,7 +44,7 @@ public class Teste{
 
         return 0;
     }
-    private static void funcaoMenu(int opc){
+    private static void funcaoMenu(int opc, BDVeiculos db){
         switch(opc){
             case 1:
                 break;
@@ -65,5 +66,30 @@ public class Teste{
                 System.out.println("Saída do sistema!");
                 break;
         }
+    }
+
+    //================== CADASTROS ===================
+    public static Passeio obterPasseio(){
+        Passeio passeio = cadVeiculo();
+
+        return passeio;
+    }
+    public static Carga obterCarga(){
+        Carga carga = cadVeiculo();
+
+        return carga;
+    }
+
+    //================== IMPRIMIR ===================
+    private static void printVeiculo(Veiculo veiculo){
+
+    }
+    private static void printPasseio(Passeio passeio){
+
+        printVeiculo(passeio);
+    }
+    private static void printCarga(Carga carga){
+
+        printVeiculo(carga);
     }
 }
